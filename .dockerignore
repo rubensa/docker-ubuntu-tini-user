@@ -1,5 +1,2 @@
 # Ignore everything
 **
-
-# Exceptions
-!docker-entrypoint.sh

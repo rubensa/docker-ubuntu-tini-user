@@ -9,21 +9,9 @@ ARG GROUP_ID=1000
 ARG USER_NAME=user
 ARG GROUP_NAME=group
 
-# Expose non-root user and group id's
-ENV USER_ID=$USER_ID
-ENV GROUP_ID=$GROUP_ID
-
 # Expose non-root user and group names
 ENV USER_NAME=$USER_NAME
 ENV GROUP_NAME=$GROUP_NAME
-
-# Docker in Docker support
-ARG DOCKER_IN_DOCKER_SUPPORT
-ARG DOCKER_GROUP_ID=1001
-ARG DOCKER_GROUP_NAME=docker
-ENV DOCKER_IN_DOCKER_SUPPORT=${DOCKER_IN_DOCKER_SUPPORT}
-ENV DOCKER_GROUP_ID=${DOCKER_GROUP_ID}
-ENV DOCKER_GROUP_NAME=${DOCKER_GROUP_NAME}
 
 # Avoid warnings by switching to noninteractive
 ENV DEBIAN_FRONTEND=noninteractive
@@ -44,9 +32,7 @@ RUN apt-get update \
     # Create some user directories
     && mkdir -p /home/${USER_NAME}/.config \
     && mkdir -p /home/${USER_NAME}/.local/bin \
-    && chown ${USER_NAME}:${GROUP_NAME} /home/${USER_NAME}/.config \
-    && chown ${USER_NAME}:${GROUP_NAME} /home/${USER_NAME}/.local \
-    && chown ${USER_NAME}:${GROUP_NAME} /home/${USER_NAME}/.local/bin \
+    && chown -R ${USER_NAME}:${GROUP_NAME} /home/${USER_NAME} \
     #
     # Set default non-root user umask to 002 to give group all file permissions
     # Allow override by setting UMASK_SET environment variable
@@ -56,10 +42,12 @@ RUN apt-get update \
     && echo "${USER_NAME} ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USER_NAME} \
     && chmod 0440 /etc/sudoers.d/${USER_NAME} \
     #
-    # Docker in Docker support
-    && if [ "$DOCKER_IN_DOCKER_SUPPORT" = "true" ] ; \
-      then addgroup --gid ${DOCKER_GROUP_ID} ${DOCKER_GROUP_NAME}; usermod -a -G ${DOCKER_GROUP_NAME} ${USER_NAME}; \
-    fi \
+    # Add fixuid
+    && curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.4/fixuid-0.4-linux-amd64.tar.gz | tar -C /sbin -xzf - \
+    && chown root:root /sbin/fixuid \
+    && chmod 4755 /sbin/fixuid \
+    && mkdir -p /etc/fixuid \
+    && printf "user: ${USER_NAME}\ngroup: ${GROUP_NAME}\npaths:\n  - /home/${USER_NAME}" > /etc/fixuid/config.yml \
     #
     # Clean up
     && apt-get autoremove -y \
@@ -69,8 +57,17 @@ RUN apt-get update \
 # Switch back to dialog for any ad-hoc use of apt-get
 ENV DEBIAN_FRONTEND=
 
-# Execute the init command
-COPY docker-entrypoint.sh /usr/local/bin/
-ENTRYPOINT [ "/sbin/tini", "--", "docker-entrypoint.sh" ]
+# Tell docker that all future commands should be run as the non-root user
+USER ${USER_NAME}
 
-CMD [ "/bin/bash" ]
+# Set user home directory (see: https://github.com/microsoft/vscode-remote-release/issues/852)
+ENV HOME /home/$USER_NAME
+
+# Set default working directory to user home directory
+WORKDIR ${HOME}
+
+# Allways execute tini and fixuid
+ENTRYPOINT [ "/sbin/tini", "--", "/sbin/fixuid" ]
+
+# By default execute a login shell
+CMD [ "/bin/bash", "-l" ]

@@ -12,10 +12,7 @@ prepare_docker_timezone() {
 }
 
 prepare_docker_user_and_group() {
-  # On run, if you specify USER_ID or GROUP_ID environment variables the system change internal user UID and group GID to that provided.
-  # This also changes file ownership for those under /home/$USER/ owned by build-time UID and GUID.
-  ENV_VARS+=" --env=USER_ID=$USER_ID"
-  ENV_VARS+=" --env=GROUP_ID=$GROUP_ID"
+  RUNNER+=" --user=${USER_ID}:${GROUP_ID}"
 }
 
 prepare_docker_timezone
@@ -24,5 +21,5 @@ prepare_docker_user_and_group
 docker run --rm -it \
   --name "ubuntu-tini-user" \
   ${MOUNTS} \
-  ${ENV_VARS} \
-  rubensa/ubuntu-tini-user
+  ${RUNNER} \
+  rubensa/ubuntu-tini-user "$@"
