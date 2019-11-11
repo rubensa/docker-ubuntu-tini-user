@@ -22,8 +22,8 @@ RUN apt-get update \
     # Basic apt configuration
     && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
     #
-    # Install ca-certificates, curl, sudo, gosu
-    && apt-get install -y --no-install-recommends ca-certificates curl sudo gosu 2>&1 \
+    # Install ca-certificates, curl, sudo
+    && apt-get install -y --no-install-recommends ca-certificates curl sudo 2>&1 \
     #
     # Create a non-root user with custom group
     && addgroup --gid ${GROUP_ID} ${GROUP_NAME} \
