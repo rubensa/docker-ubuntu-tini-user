@@ -66,6 +66,9 @@ ENV HOME /home/$USER_NAME
 # Set default working directory to user home directory
 WORKDIR ${HOME}
 
+# Set the default shell to bash rather than sh
+ENV SHELL=/bin/bash
+
 # Allways execute tini and fixuid
 ENTRYPOINT [ "/sbin/tini", "--", "/sbin/fixuid" ]
 
