@@ -22,8 +22,12 @@ RUN apt-get update \
     # Basic apt configuration
     && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
     #
-    # Install ca-certificates, curl, sudo
-    && apt-get install -y --no-install-recommends ca-certificates curl sudo 2>&1 \
+    # Install locales, ca-certificates, curl, sudo
+    && apt-get install -y --no-install-recommends locales ca-certificates curl sudo 2>&1 \
+    #
+    # Configure locale
+    && locale-gen en_US.UTF-8 \
+    && update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 \
     #
     # Create a non-root user with custom group
     && addgroup --gid ${GROUP_ID} ${GROUP_NAME} \
@@ -68,6 +72,11 @@ WORKDIR ${HOME}
 
 # Set the default shell to bash rather than sh
 ENV SHELL=/bin/bash
+
+# Configure locale
+ENV LANG en_US.UTF-8  
+ENV LANGUAGE en_US:en  
+ENV LC_ALL en_US.UTF-8
 
 # Allways execute tini and fixuid
 ENTRYPOINT [ "/sbin/tini", "--", "/sbin/fixuid" ]
