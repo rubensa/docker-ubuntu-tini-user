@@ -13,6 +13,9 @@ ARG GROUP_NAME=group
 ENV USER_NAME=$USER_NAME
 ENV GROUP_NAME=$GROUP_NAME
 
+# fixuid version to install
+ARG FIXUID_VERSION=0.4.1
+
 # Avoid warnings by switching to noninteractive
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -47,7 +50,7 @@ RUN apt-get update \
     && chmod 0440 /etc/sudoers.d/${USER_NAME} \
     #
     # Add fixuid
-    && curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.4/fixuid-0.4-linux-amd64.tar.gz | tar -C /sbin -xzf - \
+    && curl -SsL https://github.com/boxboat/fixuid/releases/download/v${FIXUID_VERSION}/fixuid-${FIXUID_VERSION}-linux-amd64.tar.gz | tar -C /sbin -xzf - \
     && chown root:root /sbin/fixuid \
     && chmod 4755 /sbin/fixuid \
     && mkdir -p /etc/fixuid \
