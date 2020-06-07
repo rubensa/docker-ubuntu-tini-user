@@ -1,4 +1,4 @@
-# Docker image based on rubensa/ubuntu-tini with non root user support
+# Docker image based on rubensa/ubuntu-tini 20.04 with non root user support
 
 This is a Docker image based on [rubensa/ubuntu-tini](https://github.com/rubensa/docker-ubuntu-tini) that allows you to connect and run with a non-root user created inside de image.
 
@@ -12,7 +12,7 @@ You can build the image like this:
 #!/usr/bin/env bash
 
 docker build --no-cache \
-  -t "rubensa/ubuntu-tini-user" \
+  -t "rubensa/ubuntu-tini-user:20.04" \
   --label "maintainer=Ruben Suarez <rubensa@gmail.com>" \
   .
 ```
@@ -43,7 +43,7 @@ prepare_docker_user_and_group() {
 prepare_docker_user_and_group
 
 docker build --no-cache \
-  -t "rubensa/ubuntu-tini-user" \
+  -t "rubensa/ubuntu-tini-user:20.04" \
   --label "maintainer=Ruben Suarez <rubensa@gmail.com>" \
   ${BUILD_ARGS} \
   .
@@ -79,7 +79,7 @@ docker run --rm -it \
   --name "ubuntu-tini-user" \
   ${ENV_VARS} \
   ${RUNNER} \
-  rubensa/ubuntu-tini-user "$@"
+  rubensa/ubuntu-tini-user:20.04 "$@"
 ```
 
 *NOTE*: Mounting /etc/timezone and /etc/localtime allows you to use your host timezone on container.

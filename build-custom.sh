@@ -21,7 +21,7 @@ prepare_docker_user_and_group() {
 prepare_docker_user_and_group
 
 docker build --no-cache \
-  -t "rubensa/ubuntu-tini-user" \
+  -t "rubensa/ubuntu-tini-user:20.04" \
   --label "maintainer=Ruben Suarez <rubensa@gmail.com>" \
   ${BUILD_ARGS} \
   .

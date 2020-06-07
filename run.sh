@@ -21,4 +21,4 @@ docker run --rm -it \
   --name "ubuntu-tini-user" \
   ${ENV_VARS} \
   ${RUNNER} \
-  rubensa/ubuntu-tini-user "$@"
+  rubensa/ubuntu-tini-user:20.04 "$@"
