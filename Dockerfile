@@ -1,4 +1,4 @@
-FROM rubensa/ubuntu-tini
+FROM rubensa/ubuntu-tini:18.04
 LABEL author="Ruben Suarez <rubensa@gmail.com>"
 
 # Define non-root user and group id's
