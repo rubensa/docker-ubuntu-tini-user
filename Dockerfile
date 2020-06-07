@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.4
-FROM rubensa/ubuntu-tini
+FROM rubensa/ubuntu-tini:18.04
 LABEL author="Ruben Suarez <rubensa@gmail.com>"
 
 # Architecture component of TARGETPLATFORM (platform of the build result)
@@ -16,19 +16,6 @@ ARG GROUP_NAME=group
 # Expose non-root user and group names
 ENV USER_NAME=${USER_NAME}
 ENV GROUP_NAME=${GROUP_NAME}
-
-# Since ubuntu:23.04 a non-root "ubuntu" user is created by default with UID=1000
-# Let's remove it to avoid conflicts
-RUN <<EOT
-echo "# Removing default 'ubuntu' user..."
-#
-# avoid "userdel: ubuntu mail spool (/var/mail/ubuntu) not found" warning
-touch /var/mail/ubuntu
-chown ubuntu /var/mail/ubuntu
-#
-# remove user
-userdel -r ubuntu
-EOT
 
 # Create a non-root user with custom group
 RUN <<EOT
