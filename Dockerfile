@@ -14,7 +14,7 @@ ENV USER_NAME=$USER_NAME
 ENV GROUP_NAME=$GROUP_NAME
 
 # fixuid version to install
-ARG FIXUID_VERSION=0.4.1
+ARG FIXUID_VERSION=0.5
 
 # Avoid warnings by switching to noninteractive
 ENV DEBIAN_FRONTEND=noninteractive
