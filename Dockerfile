@@ -50,7 +50,7 @@ RUN apt-get update \
     && chmod 0440 /etc/sudoers.d/${USER_NAME} \
     #
     # Add fixuid
-    && curl -SsL https://github.com/boxboat/fixuid/releases/download/v${FIXUID_VERSION}/fixuid-${FIXUID_VERSION}-linux-amd64.tar.gz | tar -C /sbin -xzf - \
+    && curl -sSL https://github.com/boxboat/fixuid/releases/download/v${FIXUID_VERSION}/fixuid-${FIXUID_VERSION}-linux-amd64.tar.gz | tar -C /sbin -xzf - \
     && chown root:root /sbin/fixuid \
     && chmod 4755 /sbin/fixuid \
     && mkdir -p /etc/fixuid \
