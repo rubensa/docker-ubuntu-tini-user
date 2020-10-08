@@ -41,9 +41,9 @@ RUN apt-get update \
     && mkdir -p /home/${USER_NAME}/.local/bin \
     && chown -R ${USER_NAME}:${GROUP_NAME} /home/${USER_NAME} \
     #
-    # Set default non-root user umask to 002 to give group all file permissions
+    # Set default non-root user umask to 002 to give group all file permissions (interactive non-login shell)
     # Allow override by setting UMASK_SET environment variable
-    && printf "\nUMASK_SET=\${UMASK_SET:-002}\numask \"\$UMASK_SET\"\n" >> /home/${USER_NAME}/.profile \
+    && printf "\nUMASK_SET=\${UMASK_SET:-002}\numask \"\$UMASK_SET\"\n" >> /home/${USER_NAME}/.bashrc \
     #
     # Add sudo support for non-root user
     && echo "${USER_NAME} ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USER_NAME} \
