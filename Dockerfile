@@ -84,5 +84,5 @@ ENV LC_ALL en_US.UTF-8
 # Allways execute tini and fixuid
 ENTRYPOINT [ "/sbin/tini", "--", "/sbin/fixuid" ]
 
-# By default execute a login shell
-CMD [ "/bin/bash", "-l" ]
+# By default execute an interactive shell (executes ~/.bashrc)
+CMD [ "/bin/bash", "-i" ]
