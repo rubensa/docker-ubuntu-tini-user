@@ -80,6 +80,10 @@ RUN echo "# Installing sudo..." \
     && echo "${USER_NAME} ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USER_NAME} \
     && chmod 0440 /etc/sudoers.d/${USER_NAME}
 
+# Install some user utillities
+RUN echo "# Installing bash-completion and vim..." \
+    && apt-get install -y --no-install-recommends bash-completion vim 2>&1
+
 # Clean up apt
 RUN echo "# Cleaining up apt..." \
     && apt-get autoremove -y \
