@@ -5,12 +5,12 @@ LABEL author="Ruben Suarez <rubensa@gmail.com>"
 ARG TARGETARCH
 
 # Define non-root user and group id's
-ARG USER_ID=1000
-ARG GROUP_ID=1000
+ARG USER_ID=33333
+ARG GROUP_ID=33333
 
 # Define non-root user and group names
-ARG USER_NAME=user
-ARG GROUP_NAME=group
+ARG USER_NAME=gitpod
+ARG GROUP_NAME=gitpod
 
 # Expose non-root user and group names
 ENV USER_NAME=${USER_NAME}
