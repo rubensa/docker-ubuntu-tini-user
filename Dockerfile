@@ -84,6 +84,50 @@ RUN echo "# Installing sudo..." \
 RUN echo "# Installing bash-completion and vim..." \
     && apt-get install -y --no-install-recommends bash-completion vim 2>&1
 
+# Docker CLI Version (https://download.docker.com/linux/static/stable/x86_64/)
+ARG DOCKER_VERSION=20.10.9
+# Add docker
+ADD https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz /tmp/docker.tgz
+RUN echo "# Installing docker..." \
+    && tar xzvf /tmp/docker.tgz --directory /tmp \
+    && rm /tmp/docker.tgz \
+    && cp /tmp/docker/* /usr/local/bin/ \
+    && rm -rf /tmp/docker
+# Add docker bash completion
+ADD https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/bash/docker /usr/share/bash-completion/completions/docker
+RUN echo "# Installing docker autocomplete..." \
+    #
+    # Configure docker bash completion
+    && chmod 644 /usr/share/bash-completion/completions/docker
+
+# Docker Compose (https://github.com/docker/compose/releases/)
+ARG DOCKERCOMPOSE_VERSION=v2.4.1
+# Install Docker Compose
+ADD https://github.com/docker/compose/releases/download/${DOCKERCOMPOSE_VERSION}/docker-compose-linux-x86_64 /usr/local/bin/docker-compose
+RUN echo "# Installing docker-compose..." \
+    && chmod +x /usr/local/bin/docker-compose
+# Add docker-compose bash completion
+ADD https://raw.githubusercontent.com/docker/compose/master/contrib/completion/bash/docker-compose /usr/share/bash-completion/completions/docker-compose
+RUN echo "# Installing docker-compose autocomplete..." \
+    #
+    # Configure docker bash completion
+    && chmod 644 /usr/share/bash-completion/completions/docker-compose
+
+# Default to root only access to the Docker socket, set up docker-from-docker-init.sh for non-root access
+RUN touch /var/run/docker-host.sock \
+    && ln -s /var/run/docker-host.sock /var/run/docker.sock
+
+# Add script to allow docker-from-docker
+ADD docker-from-docker-init.sh /sbin/docker-from-docker-init.sh
+RUN echo "# Allow docker-from-docker configuration for the non-root user..." \
+    #
+    # Enable docker-from-docker init script
+    && chmod +x /sbin/docker-from-docker-init.sh
+
+# Install socat (to allow docker-from-docker)
+RUN echo "# Installing socat..." \ 
+    && apt-get -y install --no-install-recommends socat 2>&1
+
 # Clean up apt
 RUN echo "# Cleaining up apt..." \
     && apt-get autoremove -y \
@@ -105,8 +149,8 @@ WORKDIR ${HOME}
 # Set the default shell to bash rather than sh
 ENV SHELL=/bin/bash
 
-# Allways execute tini and fixuid
-ENTRYPOINT [ "/sbin/tini", "--", "/sbin/fixuid" ]
+# Allways execute tini, fixuid and docker-from-docker-init
+ENTRYPOINT [ "/sbin/tini", "--", "/sbin/fixuid", "/sbin/docker-from-docker-init.sh" ]
 
 # By default execute an interactive shell (executes ~/.bashrc)
 CMD [ "/bin/bash", "-i" ]
