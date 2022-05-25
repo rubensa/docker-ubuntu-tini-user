@@ -1,4 +1,4 @@
-FROM rubensa/ubuntu-tini
+FROM rubensa/ubuntu-tini:22.04
 LABEL author="Ruben Suarez <rubensa@gmail.com>"
 
 # Architecture component of TARGETPLATFORM (platform of the build result)
