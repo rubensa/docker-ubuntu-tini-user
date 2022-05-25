@@ -1,6 +1,9 @@
 FROM rubensa/ubuntu-tini
 LABEL author="Ruben Suarez <rubensa@gmail.com>"
 
+# Architecture component of TARGETPLATFORM (platform of the build result)
+ARG TARGETARCH
+
 # Define non-root user and group id's
 ARG USER_ID=1000
 ARG GROUP_ID=1000
@@ -34,11 +37,11 @@ RUN echo "# Creating group '${GROUP_NAME}' (${GROUP_ID})..." \
 ARG FIXUID_VERSION=0.5.1
 
 # Add fixuid
-ADD https://github.com/boxboat/fixuid/releases/download/v${FIXUID_VERSION}/fixuid-${FIXUID_VERSION}-linux-amd64.tar.gz /tmp/fixuid-linux-amd64.tar.gz
+ADD https://github.com/boxboat/fixuid/releases/download/v${FIXUID_VERSION}/fixuid-${FIXUID_VERSION}-linux-${TARGETARCH}.tar.gz /tmp/fixuid-linux.tar.gz
 # Install fixuid
 RUN echo "# Installing fixuid..." \
-    && tar -C /sbin -xzf /tmp/fixuid-linux-amd64.tar.gz \
-    && rm /tmp/fixuid-linux-amd64.tar.gz \
+    && tar -C /sbin -xzf /tmp/fixuid-linux.tar.gz \
+    && rm /tmp/fixuid-linux.tar.gz \
     && chown root:root /sbin/fixuid \
     && chmod 4755 /sbin/fixuid \
     && mkdir -p /etc/fixuid \
@@ -54,8 +57,8 @@ RUN echo "# Configuring apt..." \
     && apt-get update \
     # 
     # Basic apt configuration
-    && echo "# Installing apt-utils, dialog and ca-certificates..." \
-    && apt-get install -y --no-install-recommends apt-utils dialog ca-certificates 2>&1
+    && echo "# Installing apt-utils, dialog, ca-certificates and curl..." \
+    && apt-get install -y --no-install-recommends apt-utils dialog ca-certificates curl 2>&1
 
 # Install locales
 RUN echo "# Installing locales..." \
@@ -84,11 +87,12 @@ RUN echo "# Installing sudo..." \
 RUN echo "# Installing bash-completion and vim..." \
     && apt-get install -y --no-install-recommends bash-completion vim 2>&1
 
-# Docker CLI Version (https://download.docker.com/linux/static/stable/x86_64/)
+# Docker CLI Version (https://download.docker.com/linux/static/stable/)
 ARG DOCKER_VERSION=20.10.9
 # Add docker
-ADD https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz /tmp/docker.tgz
 RUN echo "# Installing docker..." \
+    && if [ "$TARGETARCH" = "arm64" ]; then TARGET=aarch64; elif [ "$TARGETARCH" = "amd64" ]; then TARGET=x86_64; else TARGET=$TARGETARCH; fi \
+    && curl -o /tmp/docker.tgz -sSL https://download.docker.com/linux/static/stable/${TARGET}/docker-${DOCKER_VERSION}.tgz \
     && tar xzvf /tmp/docker.tgz --directory /tmp \
     && rm /tmp/docker.tgz \
     && cp /tmp/docker/* /usr/local/bin/ \
@@ -103,8 +107,9 @@ RUN echo "# Installing docker autocomplete..." \
 # Docker Compose (https://github.com/docker/compose/releases/)
 ARG DOCKERCOMPOSE_VERSION=v2.4.1
 # Install Docker Compose
-ADD https://github.com/docker/compose/releases/download/${DOCKERCOMPOSE_VERSION}/docker-compose-linux-x86_64 /usr/local/bin/docker-compose
 RUN echo "# Installing docker-compose..." \
+    && if [ "$TARGETARCH" = "arm64" ]; then TARGET=aarch64; elif [ "$TARGETARCH" = "amd64" ]; then TARGET=x86_64; else TARGET=$TARGETARCH; fi \
+    && curl -o /usr/local/bin/docker-compose -sSL https://github.com/docker/compose/releases/download/${DOCKERCOMPOSE_VERSION}/docker-compose-linux-${TARGET} \
     && chmod +x /usr/local/bin/docker-compose
 # Add docker-compose bash completion
 ADD https://raw.githubusercontent.com/docker/compose/master/contrib/completion/bash/docker-compose /usr/share/bash-completion/completions/docker-compose

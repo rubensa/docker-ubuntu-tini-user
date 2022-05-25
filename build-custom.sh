@@ -20,8 +20,12 @@ prepare_docker_user_and_group() {
 
 prepare_docker_user_and_group
 
-docker build --no-cache \
+docker buildx build --platform=linux/amd64,linux/arm64 --no-cache \
   -t "rubensa/ubuntu-tini-user" \
   --label "maintainer=Ruben Suarez <rubensa@gmail.com>" \
   ${BUILD_ARGS} \
   .
+
+docker buildx build --load \
+	-t "rubensa/ubuntu-tini-user" \
+	.
