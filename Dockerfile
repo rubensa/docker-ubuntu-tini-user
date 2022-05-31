@@ -35,7 +35,6 @@ RUN echo "# Creating group '${GROUP_NAME}' (${GROUP_ID})..." \
 
 # fixuid version to install (https://github.com/boxboat/fixuid/releases)
 ARG FIXUID_VERSION=0.5.1
-
 # Add fixuid
 ADD https://github.com/boxboat/fixuid/releases/download/v${FIXUID_VERSION}/fixuid-${FIXUID_VERSION}-linux-${TARGETARCH}.tar.gz /tmp/fixuid-linux.tar.gz
 # Install fixuid
@@ -88,7 +87,7 @@ RUN echo "# Installing bash-completion and vim..." \
     && apt-get install -y --no-install-recommends bash-completion vim 2>&1
 
 # Docker CLI Version (https://download.docker.com/linux/static/stable/)
-ARG DOCKER_VERSION=20.10.9
+ARG DOCKER_VERSION=20.10.16
 # Add docker
 RUN echo "# Installing docker..." \
     && if [ "$TARGETARCH" = "arm64" ]; then TARGET=aarch64; elif [ "$TARGETARCH" = "amd64" ]; then TARGET=x86_64; else TARGET=$TARGETARCH; fi \
@@ -105,7 +104,7 @@ RUN echo "# Installing docker autocomplete..." \
     && chmod 644 /usr/share/bash-completion/completions/docker
 
 # Docker Compose (https://github.com/docker/compose/releases/)
-ARG DOCKERCOMPOSE_VERSION=v2.4.1
+ARG DOCKERCOMPOSE_VERSION=v2.6.0
 # Install Docker Compose
 RUN echo "# Installing docker-compose..." \
     && if [ "$TARGETARCH" = "arm64" ]; then TARGET=aarch64; elif [ "$TARGETARCH" = "amd64" ]; then TARGET=x86_64; else TARGET=$TARGETARCH; fi \
