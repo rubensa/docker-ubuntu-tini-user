@@ -56,8 +56,8 @@ RUN echo "# Configuring apt..." \
     && apt-get update \
     # 
     # Basic apt configuration
-    && echo "# Installing apt-utils, dialog, ca-certificates and curl..." \
-    && apt-get install -y --no-install-recommends apt-utils dialog ca-certificates curl 2>&1
+    && echo "# Installing apt-utils, dialog, ca-certificates, curl and tzdata..." \
+    && apt-get install -y --no-install-recommends apt-utils dialog ca-certificates curl tzdata 2>&1
 
 # Install locales
 RUN echo "# Installing locales..." \
