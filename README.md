@@ -1,6 +1,6 @@
 # Docker image based on rubensa/ubuntu-tini with non root user support
 
-This is a Docker image based on [rubensa/ubuntu-tini](https://github.com/rubensa/docker-ubuntu-tini) that allows you to connect and run with a non-root user created inside de image.
+This is a Docker image based on [rubensa/ubuntu-tini](https://github.com/rubensa/docker-ubuntu-tini) that allows you to connect and run with a non-root user created inside the image.
 
 The internal user (user) has sudo and the image includes [fixuid](https://github.com/boxboat/fixuid) so you can set internal user (user) UID and internal group (group) GID to your current UID and GID by providing that info means of "--user" docker running option.
 
@@ -102,7 +102,7 @@ docker run --rm -it \
 
 *NOTE*: Mounting /var/run/docker.sock allows host docker usage inside the container (docker-from-docker).
 
-This way, the internal user UID an group GID are changed to the current host user:group launching the container and the existing files under his internal HOME directory that where owned by user and group are also updated to belong to the new UID:GID.
+This way, the internal user UID and group GID are changed to the current host user:group launching the container and the existing files under his internal HOME directory that where owned by user and group are also updated to belong to the new UID:GID.
 
 ## Connect
 
