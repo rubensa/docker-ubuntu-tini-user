@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+DOCKER_REPOSITORY_NAME="rubensa"
+DOCKER_IMAGE_NAME="ubuntu-tini-user"
+DOCKER_IMAGE_TAG="latest"
+
 # Get current user UID
 USER_ID=$(id -u)
 # Get current user main GID
@@ -21,11 +25,11 @@ prepare_docker_user_and_group() {
 prepare_docker_user_and_group
 
 docker buildx build --platform=linux/amd64,linux/arm64 --no-cache \
-  -t "rubensa/ubuntu-tini-user" \
+  -t "${DOCKER_REPOSITORY_NAME}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}" \
   --label "maintainer=Ruben Suarez <rubensa@gmail.com>" \
   ${BUILD_ARGS} \
   .
 
 docker buildx build --load \
-	-t "rubensa/ubuntu-tini-user" \
-	.
+  -t "${DOCKER_REPOSITORY_NAME}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}" \
+  .

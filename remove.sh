@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 
+DOCKER_IMAGE_NAME="ubuntu-tini-user"
+
 docker rm \
-  ubuntu-tini-user
+  "${DOCKER_IMAGE_NAME}"

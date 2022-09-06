@@ -10,16 +10,16 @@ set -e
 # Wrapper function to only use sudo if not already root
 sudoIf()
 {
-    if [ "$(id -u)" -ne 0 ]; then
-        sudo "$@"
-    else
-        "$@"
-    fi
+  if [ "$(id -u)" -ne 0 ]; then
+    sudo "$@"
+  else
+    "$@"
+  fi
 }
 # Log messages
 log()
 {
-    echo -e "[$(date)] $@" | sudoIf tee -a ${SOCAT_LOG} > /dev/null
+  echo -e "[$(date)] $@" | sudoIf tee -a ${SOCAT_LOG} > /dev/null
 }
 echo -e "n** $(date) **" | sudoIf tee -a ${SOCAT_LOG} > /dev/null
 log "Ensuring ${USER_NAME} has access to ${SOURCE_SOCKET} via ${TARGET_SOCKET}"
@@ -28,12 +28,12 @@ log "Ensuring ${USER_NAME} has access to ${SOURCE_SOCKET} via ${TARGET_SOCKET}"
 SOCKET_GID=$(stat -c '%g' ${SOURCE_SOCKET})
 # Enable proxy if not already running
 if [ ! -f "${SOCAT_PID}" ] || ! ps -p $(cat ${SOCAT_PID}) > /dev/null; then
-    log "Enabling socket proxy."
-    log "Proxying ${SOURCE_SOCKET} to ${TARGET_SOCKET} for docker from docker usage"
-    sudoIf rm -rf ${TARGET_SOCKET}
-    (sudoIf socat UNIX-LISTEN:${TARGET_SOCKET},fork,mode=660,user=${USER_NAME} UNIX-CONNECT:${SOURCE_SOCKET} 2>&1 | sudoIf tee -a ${SOCAT_LOG} > /dev/null & echo "$!" | sudoIf tee ${SOCAT_PID} > /dev/null)
+  log "Enabling socket proxy."
+  log "Proxying ${SOURCE_SOCKET} to ${TARGET_SOCKET} for docker from docker usage"
+  sudoIf rm -rf ${TARGET_SOCKET}
+  (sudoIf socat UNIX-LISTEN:${TARGET_SOCKET},fork,mode=660,user=${USER_NAME} UNIX-CONNECT:${SOURCE_SOCKET} 2>&1 | sudoIf tee -a ${SOCAT_LOG} > /dev/null & echo "$!" | sudoIf tee ${SOCAT_PID} > /dev/null)
 else
-    log "Socket proxy already running."
+  log "Socket proxy already running."
 fi
 log "Success"
 

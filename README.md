@@ -11,20 +11,28 @@ You can build the image like this:
 ```
 #!/usr/bin/env bash
 
+DOCKER_REPOSITORY_NAME="rubensa"
+DOCKER_IMAGE_NAME="ubuntu-tini-user"
+DOCKER_IMAGE_TAG="latest"
+
 docker buildx build --platform=linux/amd64,linux/arm64 --no-cache \
-  -t "rubensa/ubuntu-tini-user" \
+  -t "${DOCKER_REPOSITORY_NAME}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}" \
   --label "maintainer=Ruben Suarez <rubensa@gmail.com>" \
   .
 
 docker buildx build --load \
-	-t "rubensa/ubuntu-tini-user" \
-	.
+  -t "${DOCKER_REPOSITORY_NAME}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}" \
+  .
 ```
 
 You can also add build image args to change default non-root user (user:1000) and group (group:1000) like this:
 
 ```
 #!/usr/bin/env bash
+
+DOCKER_REPOSITORY_NAME="rubensa"
+DOCKER_IMAGE_NAME="ubuntu-tini-user"
+DOCKER_IMAGE_TAG="latest"
 
 # Get current user UID
 USER_ID=$(id -u)
@@ -47,14 +55,14 @@ prepare_docker_user_and_group() {
 prepare_docker_user_and_group
 
 docker buildx build --platform=linux/amd64,linux/arm64 --no-cache \
-  -t "rubensa/ubuntu-tini-user" \
+  -t "${DOCKER_REPOSITORY_NAME}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}" \
   --label "maintainer=Ruben Suarez <rubensa@gmail.com>" \
   ${BUILD_ARGS} \
   .
 
 docker buildx build --load \
-	-t "rubensa/ubuntu-tini-user" \
-	.
+  -t "${DOCKER_REPOSITORY_NAME}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}" \
+  .
 ```
 
 But this is generally not needed as the container can change user UID and group GID on run if "--user" option is provided (see bellow).
@@ -66,9 +74,9 @@ You can run the container like this (change --rm with -d if you don't want the c
 ```
 #!/usr/bin/env bash
 
-You can run the container like this (change --rm with -d if you don't want the container to be removed on stop):
-
-```
+DOCKER_REPOSITORY_NAME="rubensa"
+DOCKER_IMAGE_NAME="ubuntu-tini-user"
+DOCKER_IMAGE_TAG="latest"
 
 # Get current user UID
 USER_ID=$(id -u)
@@ -93,11 +101,11 @@ prepare_docker_user_and_group
 prepare_docker_from_docker
 
 docker run --rm -it \
-  --name "ubuntu-tini-user" \
+  --name "${DOCKER_IMAGE_NAME}" \
   ${ENV_VARS} \
   ${MOUNTS} \
   ${RUNNER} \
-  rubensa/ubuntu-tini-user "$@"
+  ${DOCKER_REPOSITORY_NAME}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} "$@"
 ```
 
 *NOTE*: Mounting /var/run/docker.sock allows host docker usage inside the container (docker-from-docker).
@@ -111,8 +119,10 @@ You can connect to the running container like this:
 ```
 #!/usr/bin/env bash
 
+DOCKER_IMAGE_NAME="ubuntu-tini-user"
+
 docker exec -it \
-  ubuntu-tini-user \
+  "${DOCKER_IMAGE_NAME}" \
   bash -l
 ```
 
@@ -125,8 +135,10 @@ If you run the container without --rm you can stop it like this:
 ```
 #!/usr/bin/env bash
 
-docker stop \
-  ubuntu-tini-user
+DOCKER_IMAGE_NAME="ubuntu-tini-user"
+
+docker stop  \
+  "${DOCKER_IMAGE_NAME}"
 ```
 
 ## Start
@@ -136,8 +148,10 @@ If you run the container without --rm you can start it again like this:
 ```
 #!/usr/bin/env bash
 
+DOCKER_IMAGE_NAME="ubuntu-tini-user"
+
 docker start \
-  ubuntu-tini-user
+  "${DOCKER_IMAGE_NAME}"
 ```
 
 ## Remove
@@ -147,6 +161,8 @@ If you run the container without --rm you can remove once stopped like this:
 ```
 #!/usr/bin/env bash
 
+DOCKER_IMAGE_NAME="ubuntu-tini-user"
+
 docker rm \
-  ubuntu-tini-user
+  "${DOCKER_IMAGE_NAME}"
 ```
