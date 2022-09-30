@@ -87,7 +87,7 @@ RUN echo "# Installing bash-completion and vim..." \
   && apt-get install -y --no-install-recommends bash-completion vim 2>&1
 
 # Docker CLI Version (https://download.docker.com/linux/static/stable/)
-ARG DOCKER_VERSION=20.10.16
+ARG DOCKER_VERSION=20.10.18
 # Add docker
 RUN echo "# Installing docker..." \
   && if [ "$TARGETARCH" = "arm64" ]; then TARGET=aarch64; elif [ "$TARGETARCH" = "amd64" ]; then TARGET=x86_64; else TARGET=$TARGETARCH; fi \
@@ -104,18 +104,13 @@ RUN echo "# Installing docker autocomplete..." \
   && chmod 644 /usr/share/bash-completion/completions/docker
 
 # Docker Compose (https://github.com/docker/compose/releases/)
-ARG DOCKERCOMPOSE_VERSION=v2.6.0
+ARG DOCKERCOMPOSE_VERSION=2.11.2
 # Install Docker Compose
 RUN echo "# Installing docker-compose..." \
   && if [ "$TARGETARCH" = "arm64" ]; then TARGET=aarch64; elif [ "$TARGETARCH" = "amd64" ]; then TARGET=x86_64; else TARGET=$TARGETARCH; fi \
-  && curl -o /usr/local/bin/docker-compose -sSL https://github.com/docker/compose/releases/download/${DOCKERCOMPOSE_VERSION}/docker-compose-linux-${TARGET} \
-  && chmod +x /usr/local/bin/docker-compose
-# Add docker-compose bash completion
-ADD https://raw.githubusercontent.com/docker/compose/master/contrib/completion/bash/docker-compose /usr/share/bash-completion/completions/docker-compose
-RUN echo "# Installing docker-compose autocomplete..." \
-  #
-  # Configure docker bash completion
-  && chmod 644 /usr/share/bash-completion/completions/docker-compose
+  && mkdir -p /usr/local/lib/docker/cli-plugins \
+  && curl -o /usr/local/lib/docker/cli-plugins/docker-compose -sSL https://github.com/docker/compose/releases/download/v${DOCKERCOMPOSE_VERSION}/docker-compose-linux-${TARGET} \
+  && chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 
 # Default to root only access to the Docker socket, set up docker-from-docker-init.sh for non-root access
 RUN touch /var/run/docker-host.sock \
