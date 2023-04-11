@@ -87,7 +87,7 @@ RUN echo "# Installing bash-completion and vim..." \
   && apt-get install -y --no-install-recommends bash-completion vim 2>&1
 
 # Docker CLI Version (https://download.docker.com/linux/static/stable/)
-ARG DOCKER_VERSION=20.10.23
+ARG DOCKER_VERSION=23.0.3
 # Add docker
 RUN echo "# Installing docker..." \
   && if [ "$TARGETARCH" = "arm64" ]; then TARGET=aarch64; elif [ "$TARGETARCH" = "amd64" ]; then TARGET=x86_64; else TARGET=$TARGETARCH; fi \
@@ -104,7 +104,7 @@ RUN echo "# Installing docker autocomplete..." \
   && chmod 644 /usr/share/bash-completion/completions/docker
 
 # Docker Compose (https://github.com/docker/compose/releases/)
-ARG DOCKERCOMPOSE_VERSION=2.15.1
+ARG DOCKERCOMPOSE_VERSION=2.17.2
 # Install Docker Compose
 RUN echo "# Installing docker-compose..." \
   && if [ "$TARGETARCH" = "arm64" ]; then TARGET=aarch64; elif [ "$TARGETARCH" = "amd64" ]; then TARGET=x86_64; else TARGET=$TARGETARCH; fi \
