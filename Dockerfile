@@ -86,47 +86,6 @@ RUN echo "# Installing sudo..." \
 RUN echo "# Installing bash-completion and vim..." \
   && apt-get install -y --no-install-recommends bash-completion vim 2>&1
 
-# Docker CLI Version (https://download.docker.com/linux/static/stable/)
-ARG DOCKER_VERSION=23.0.3
-# Add docker
-RUN echo "# Installing docker..." \
-  && if [ "$TARGETARCH" = "arm64" ]; then TARGET=aarch64; elif [ "$TARGETARCH" = "amd64" ]; then TARGET=x86_64; else TARGET=$TARGETARCH; fi \
-  && curl -o /tmp/docker.tgz -sSL https://download.docker.com/linux/static/stable/${TARGET}/docker-${DOCKER_VERSION}.tgz \
-  && tar xzvf /tmp/docker.tgz --directory /tmp \
-  && rm /tmp/docker.tgz \
-  && cp /tmp/docker/* /usr/local/bin/ \
-  && rm -rf /tmp/docker
-# Add docker bash completion
-ADD https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/bash/docker /usr/share/bash-completion/completions/docker
-RUN echo "# Installing docker autocomplete..." \
-  #
-  # Configure docker bash completion
-  && chmod 644 /usr/share/bash-completion/completions/docker
-
-# Docker Compose (https://github.com/docker/compose/releases/)
-ARG DOCKERCOMPOSE_VERSION=2.17.2
-# Install Docker Compose
-RUN echo "# Installing docker-compose..." \
-  && if [ "$TARGETARCH" = "arm64" ]; then TARGET=aarch64; elif [ "$TARGETARCH" = "amd64" ]; then TARGET=x86_64; else TARGET=$TARGETARCH; fi \
-  && mkdir -p /usr/local/lib/docker/cli-plugins \
-  && curl -o /usr/local/lib/docker/cli-plugins/docker-compose -sSL https://github.com/docker/compose/releases/download/v${DOCKERCOMPOSE_VERSION}/docker-compose-linux-${TARGET} \
-  && chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
-
-# Default to root only access to the Docker socket, set up docker-from-docker-init.sh for non-root access
-RUN touch /var/run/docker-host.sock \
-  && ln -s /var/run/docker-host.sock /var/run/docker.sock
-
-# Add script to allow docker-from-docker
-ADD docker-from-docker-init.sh /sbin/docker-from-docker-init.sh
-RUN echo "# Allow docker-from-docker configuration for the non-root user..." \
-  #
-  # Enable docker-from-docker init script
-  && chmod +x /sbin/docker-from-docker-init.sh
-
-# Install socat (to allow docker-from-docker)
-RUN echo "# Installing socat..." \ 
-  && apt-get -y install --no-install-recommends socat 2>&1
-
 # Clean up apt
 RUN echo "# Cleaining up apt..." \
   && apt-get autoremove -y \
