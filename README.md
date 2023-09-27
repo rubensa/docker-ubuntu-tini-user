@@ -102,8 +102,6 @@ docker run --rm -it \
   ${DOCKER_REPOSITORY_NAME}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} "$@"
 ```
 
-*NOTE*: Mounting /var/run/docker.sock allows host docker usage inside the container (docker-from-docker).
-
 This way, the internal user UID and group GID are changed to the current host user:group launching the container and the existing files under his internal HOME directory that where owned by user and group are also updated to belong to the new UID:GID.
 
 ## Connect

@@ -108,7 +108,7 @@ WORKDIR ${HOME}
 ENV SHELL=/bin/bash
 
 # Allways execute tini, fixuid and docker-from-docker-init
-ENTRYPOINT [ "/sbin/tini", "--", "/sbin/fixuid", "/sbin/docker-from-docker-init.sh" ]
+ENTRYPOINT [ "/sbin/tini", "--", "/sbin/fixuid" ]
 
 # By default execute an interactive shell (executes ~/.bashrc)
 CMD [ "/bin/bash", "-i" ]
