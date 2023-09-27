@@ -34,7 +34,7 @@ RUN echo "# Creating group '${GROUP_NAME}' (${GROUP_ID})..." \
   && printf "\nUMASK_SET=\${UMASK_SET:-002}\numask \"\${UMASK_SET}\"\n" >> /home/${USER_NAME}/.bashrc
 
 # fixuid version to install (https://github.com/boxboat/fixuid/releases)
-ARG FIXUID_VERSION=0.5.1
+ARG FIXUID_VERSION=0.6.0
 # Add fixuid
 ADD https://github.com/boxboat/fixuid/releases/download/v${FIXUID_VERSION}/fixuid-${FIXUID_VERSION}-linux-${TARGETARCH}.tar.gz /tmp/fixuid-linux.tar.gz
 # Install fixuid
