@@ -16,11 +16,23 @@ ARG GROUP_NAME=group
 ENV USER_NAME=${USER_NAME}
 ENV GROUP_NAME=${GROUP_NAME}
 
+# Since ubuntu:23.04 a non-root "ubuntu" user is created by default with UID=1000
+# Let's remove it to avoid conflicts
+RUN echo "# Removing default 'ubuntu' user..." \
+  #
+  # avoid "userdel: ubuntu mail spool (/var/mail/ubuntu) not found" warning
+  && touch /var/mail/ubuntu \
+  && chown ubuntu /var/mail/ubuntu \
+  #
+  # remove user
+  && userdel -r ubuntu
+
 # Create a non-root user with custom group
 RUN echo "# Creating group '${GROUP_NAME}' (${GROUP_ID})..." \
-  && addgroup --gid ${GROUP_ID} ${GROUP_NAME} \
+  && groupadd --gid ${GROUP_ID} ${GROUP_NAME} \
   && echo "# Creating user '${USER_NAME}' (${USER_ID}) and adding it to '${GROUP_NAME}'..." \
-  && adduser --uid ${USER_ID} --ingroup ${GROUP_NAME} --home /home/${USER_NAME} --shell /bin/bash --disabled-password --gecos "User" ${USER_NAME} \
+  && useradd --uid ${USER_ID} --gid ${GROUP_NAME} --home /home/${USER_NAME} --shell /bin/bash ${USER_NAME} \
+  && passwd -d ${USER_NAME} \
   #
   # Create some user directories
   && echo "# Creating directories '.config' and '.local/bin' under user HOME directory..." \
