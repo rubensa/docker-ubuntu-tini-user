@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.4
-FROM rubensa/ubuntu-tini
+FROM rubensa/ubuntu-tini:24.04
 LABEL author="Ruben Suarez <rubensa@gmail.com>"
 
 # Architecture component of TARGETPLATFORM (platform of the build result)

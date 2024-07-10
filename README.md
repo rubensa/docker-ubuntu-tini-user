@@ -1,4 +1,4 @@
-# Docker image based on rubensa/ubuntu-tini with non root user support
+# Docker image based on rubensa/ubuntu-tini 24.04 with non root user support
 
 This is a Docker image based on [rubensa/ubuntu-tini](https://github.com/rubensa/docker-ubuntu-tini) that allows you to connect and run with a non-root user created inside the image.
 
@@ -13,7 +13,7 @@ You can build the image like this:
 
 DOCKER_REPOSITORY_NAME="rubensa"
 DOCKER_IMAGE_NAME="ubuntu-tini-user"
-DOCKER_IMAGE_TAG="latest"
+DOCKER_IMAGE_TAG="24.04"
 
 docker buildx build --platform=linux/amd64,linux/arm64 --no-cache \
   -t "${DOCKER_REPOSITORY_NAME}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}" \
@@ -32,7 +32,7 @@ You can also add build image args to change default non-root user (user:1000) an
 
 DOCKER_REPOSITORY_NAME="rubensa"
 DOCKER_IMAGE_NAME="ubuntu-tini-user"
-DOCKER_IMAGE_TAG="latest"
+DOCKER_IMAGE_TAG="24.04"
 
 # Get current user UID
 USER_ID=$(id -u)
@@ -76,7 +76,7 @@ You can run the container like this (change --rm with -d if you don't want the c
 
 DOCKER_REPOSITORY_NAME="rubensa"
 DOCKER_IMAGE_NAME="ubuntu-tini-user"
-DOCKER_IMAGE_TAG="latest"
+DOCKER_IMAGE_TAG="24.04"
 
 # Get current user UID
 USER_ID=$(id -u)
