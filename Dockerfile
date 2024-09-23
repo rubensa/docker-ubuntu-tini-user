@@ -31,7 +31,7 @@ RUN echo "# Removing default 'ubuntu' user..." \
 RUN echo "# Creating group '${GROUP_NAME}' (${GROUP_ID})..." \
   && groupadd --gid ${GROUP_ID} ${GROUP_NAME} \
   && echo "# Creating user '${USER_NAME}' (${USER_ID}) and adding it to '${GROUP_NAME}'..." \
-  && useradd --uid ${USER_ID} --gid ${GROUP_NAME} --home /home/${USER_NAME} --shell /bin/bash ${USER_NAME} \
+  && useradd --uid ${USER_ID} --gid ${GROUP_NAME} --home /home/${USER_NAME} --create-home --shell /bin/bash ${USER_NAME} \
   && passwd -d ${USER_NAME} \
   #
   # Create some user directories
